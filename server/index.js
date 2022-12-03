@@ -20,6 +20,10 @@ const app = express();
 // Allow Content-Type of application/json
 app.use(express.json());
 
+// add api endpoints
+const routes = require('./routes');
+app.use('/api', routes);
+
 if (process.env.NODE_ENV === 'production') {
   // for production builds, use output of react-build
   app.use(express.static('client/build'));
