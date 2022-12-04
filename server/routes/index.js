@@ -4,9 +4,13 @@ const router = express.Router();
 
 // import route dependencies
 const search = require('./search');
+const watchlists = require('./watchlists');
+const users = require('./users');
 
 // register routes
 router.use('/search', search);
+router.use('/watchlists', watchlists);
+router.use('/users', users);
 
 // use to check if service is online
 router.get('/service/health', (req, res) => {

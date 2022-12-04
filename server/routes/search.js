@@ -1,5 +1,5 @@
 const express = require('express');
-const { DiscoverMovies } = require('../services/tmdb');
+const { discoverMovies } = require('../services/tmdb');
 
 const router = express.Router();
 
@@ -11,7 +11,7 @@ router.post('/', async (req, res) => {
   }
 
   try {
-    const newMovies = await DiscoverMovies(filters);
+    const newMovies = await discoverMovies(filters);
     return res.status(200).json({ movies: newMovies });
   } catch (err) {
     console.log(err);
