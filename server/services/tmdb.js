@@ -68,7 +68,7 @@ function generateSearchParams(searchFilters) {
   return params;
 }
 
-async function DiscoverMovies(searchFilters) {
+async function discoverMovies(searchFilters) {
   const apiKey = process.env.TMBD_API_KEY;
   if (apiKey === '') {
     throw 'TMBD API key not found';
@@ -93,5 +93,5 @@ async function DiscoverMovies(searchFilters) {
 }
 
 module.exports = {
-  DiscoverMovies,
+  discoverMovies,
 };
