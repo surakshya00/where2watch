@@ -22,7 +22,12 @@ async function createUser(email, firstName, lastName) {
   return newUser;
 }
 
+async function emailExists(email) {
+  return await UserModel.exists({ email });
+}
+
 module.exports = {
   getUserById,
   createUser,
+  emailExists,
 };

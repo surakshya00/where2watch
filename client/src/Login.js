@@ -5,6 +5,7 @@ import {
   signInWithEmailAndPassword,
 } from 'firebase/auth';
 import { auth } from './Firebase';
+import { loginUser } from './actions/users';
 
 function Login() {
   const [loginEmail, setLoginEmail] = useState('');
@@ -12,12 +13,23 @@ function Login() {
 
   const logIn = async () => {
     try {
+      // authenticate with Firebase
       const user = await signInWithEmailAndPassword(
         auth,
         loginEmail,
         loginPassword,
       );
-      console.log(user);
+
+      if (user) {
+        // generate cookie for authenticating requests
+        const accessToken = user.user.accessToken;
+        const email = user.user.email;
+        const name = user.user.displayName;
+
+        await loginUser(accessToken, email, name);
+
+        // TODO: save user in context
+      }
     } catch (error) {
       console.log(error.message);
     }
@@ -32,8 +44,6 @@ function Login() {
   React.useEffect(() => {
     onAuthStateChanged(auth, (currentUser) => setUser(currentUser));
   }, []);
-
-  console.log(user);
 
   return (
     <div>
