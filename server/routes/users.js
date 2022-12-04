@@ -1,8 +1,8 @@
 const express = require('express');
 const {
-  getJWTFromHeader,
-  getJWTFromCookie,
-  setJWTToCookie,
+  getAccessTokenFromHeader,
+  getAccessTokenFromCookie,
+  setAccessTokenToCookie,
 } = require('../auth');
 const { createUser, emailExists } = require('../services/user');
 
@@ -21,15 +21,11 @@ router.post('/register', async (req, res) => {
 
 router.post('/login', async (req, res) => {
   try {
-    let accessToken = getJWTFromHeader(req);
-    if (accessToken === '') {
-      accessToken = getJWTFromCookie(req);
-    }
-
+    let accessToken = getAccessTokenFromHeader(req);
     if (accessToken === '') {
       return res
         .status(401)
-        .json({ message: 'missing access token in request header/cookie' });
+        .json({ message: 'missing access token in request header' });
     }
 
     // upsert user info
@@ -44,7 +40,7 @@ router.post('/login', async (req, res) => {
       await createUser(email, firstName, lastName);
     }
 
-    setJWTToCookie(res, accessToken);
+    setAccessTokenToCookie(res, accessToken);
     return res.status(200).json({
       accessToken,
     });

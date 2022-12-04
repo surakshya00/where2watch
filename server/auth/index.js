@@ -1,12 +1,12 @@
-const COOKIE_NAME = 'where2watch-firebase-token';
+const COOKIE_NAME = 'where2watch-access-token';
 
 const cookieExpirationInHour = 6;
 
-function getJWTFromCookie(req) {
+function getAccessTokenFromCookie(req) {
   return req?.cookies?.[COOKIE_NAME] || '';
 }
 
-function getJWTFromHeader(req) {
+function getAccessTokenFromHeader(req) {
   const headers = req.headers.authorization;
   if (headers && headers.startsWith('Bearer ')) {
     return headers.split(' ')[1];
@@ -15,7 +15,7 @@ function getJWTFromHeader(req) {
 }
 
 // Save JWT as cookie for outgoing response
-function setJWTToCookie(res, payload) {
+function setAccessTokenToCookie(res, payload) {
   res.cookie(COOKIE_NAME, payload, {
     maxAge: cookieExpirationInHour * 60 * 60 * 1000,
     httpOnly: process.env.NODE_ENV !== 'production',
@@ -24,7 +24,7 @@ function setJWTToCookie(res, payload) {
 
 module.exports = {
   COOKIE_NAME,
-  getJWTFromCookie,
-  getJWTFromHeader,
-  setJWTToCookie,
+  getAccessTokenFromCookie,
+  getAccessTokenFromHeader,
+  setAccessTokenToCookie,
 };
