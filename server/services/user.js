@@ -5,7 +5,7 @@ async function getUserById(userId) {
   return user;
 }
 
-async function createUser(email, username, password) {
+async function createUser(email, username) {
   // Determine if the username already exists
   const isExistingUsername = await UserModel.exists({
     username: username,
@@ -25,7 +25,6 @@ async function createUser(email, username, password) {
   const newUser = await UserModel.create({
     username,
     email,
-    password,
   });
   return newUser;
 }

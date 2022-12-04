@@ -12,8 +12,6 @@ async function getWatchlistById(watchlistId, userId) {
     throw new Error('no watchlist found');
   }
 
-  console.log(watchlist);
-
   if (watchlist.owner.id !== userId) {
     throw new Error('user is not the owner of the watchlist');
   }
