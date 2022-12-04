@@ -5,6 +5,11 @@ async function getUserById(userId) {
   return user;
 }
 
+async function getUserByEmail(email) {
+  const user = await UserModel.findOne({ email });
+  return user;
+}
+
 async function createUser(email, firstName, lastName) {
   // determine if email already exists
   const isExistingEmail = await UserModel.exists({
@@ -30,4 +35,5 @@ module.exports = {
   getUserById,
   createUser,
   emailExists,
+  getUserByEmail,
 };

@@ -19,7 +19,7 @@ export async function saveUserToDatabase(email, firstName, lastName) {
   throw Error(errorMessage);
 }
 
-export async function loginUser(accessToken, email, name) {
+export async function loginUser(token, email, name) {
   const payload = { email, name };
 
   const response = await fetch('/api/users/login', {
@@ -27,7 +27,7 @@ export async function loginUser(accessToken, email, name) {
     body: JSON.stringify(payload),
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${token}`,
     },
   });
 

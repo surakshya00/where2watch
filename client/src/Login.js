@@ -14,19 +14,19 @@ function Login() {
   const logIn = async () => {
     try {
       // authenticate with Firebase
-      const user = await signInWithEmailAndPassword(
+      const credentials = await signInWithEmailAndPassword(
         auth,
         loginEmail,
         loginPassword,
       );
 
-      if (user) {
+      if (credentials) {
         // generate cookie for authenticating requests
-        const accessToken = user.user.accessToken;
-        const email = user.user.email;
-        const name = user.user.displayName;
+        const token = await credentials.user.getIdToken();
+        const email = credentials.user.email;
+        const name = credentials.user.displayName;
 
-        await loginUser(accessToken, email, name);
+        await loginUser(token, email, name);
 
         // TODO: save user in context
       }
