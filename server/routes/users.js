@@ -1,5 +1,7 @@
 const express = require('express');
 const { getJWTFromHeader, setJWTToCookie } = require('../auth');
+const { decodeFirebaseJWTToken } = require('../auth/firebase');
+const { authenticateUser } = require('../middleware/auth');
 const { createUser, emailExists } = require('../services/user');
 
 const router = express.Router();
@@ -24,15 +26,23 @@ router.post('/login', async (req, res) => {
         .json({ message: 'missing JWT token in request header' });
     }
 
-    // upsert user info
+    // retrieve user info
     const { email, name } = req.body;
-    if (email === '') {
+    if (!email) {
       throw new Error('no email provided for user');
+    }
+
+    // verify email matches the one in JWT token
+    const payload = await decodeFirebaseJWTToken(token);
+    if (email !== payload.email) {
+      throw new Error(
+        'email mismatch. Provided email does not match the one in the JWT',
+      );
     }
 
     const isExistingEmail = await emailExists(email);
     if (!isExistingEmail) {
-      const { firstName, lastName } = decodeRawName(name);
+      const { firstName, lastName } = decodeRawName(name || '');
       await createUser(email, firstName, lastName);
     }
 
@@ -43,6 +53,10 @@ router.post('/login', async (req, res) => {
   } catch (e) {
     return res.status(500).json({ message: e.toString() });
   }
+});
+
+router.get('/validate', authenticateUser, async (req, res) => {
+  return res.status(200).json({ message: 'is authenticated' });
 });
 
 function decodeRawName(name) {

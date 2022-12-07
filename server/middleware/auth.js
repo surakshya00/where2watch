@@ -1,5 +1,5 @@
 const { getJWTFromCookie } = require('../auth');
-const { verifyFirebaseToken } = require('../auth/firebase');
+const { decodeFirebaseJWTToken } = require('../auth/firebase');
 const { getUserByEmail } = require('../services/user');
 
 async function authenticateUser(req, res, next) {
@@ -11,7 +11,7 @@ async function authenticateUser(req, res, next) {
     }
 
     // validate JWT with firebase
-    const payload = await verifyFirebaseToken(token);
+    const payload = await decodeFirebaseJWTToken(token);
     email = payload.email;
 
     // retrieve user by email
