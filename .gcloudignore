@@ -1,0 +1,11 @@
+# Dependencies
+*/node_modules
+/.git
+/.github
+/.vscode
+
+# Client source code
+client/src
+
+# misc
+**/.DS_Store

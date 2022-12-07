@@ -1,0 +1,59 @@
+name: Deploy Web App to App Engine
+
+on:
+  release:
+    types: [released]
+
+jobs:
+  deploy-web-app:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build client
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+        run: |
+          npm client:install
+          npm client:build
+
+      - name: Create app.yaml
+        run: |
+          cat << EOF > ${{ github.workspace }}/app.yaml
+          runtime: nodejs16
+          env: standard
+          instance_class: F1
+          handlers:
+            - url: /.*
+              script: auto
+              secure: always
+              redirect_http_response_code: '301'
+            - url: .*
+              script: auto
+          env_variables:
+            NODE_ENV: "production"
+            MONGODB_URL: "${{ secrets.MONGODB_URL }}"
+            TMDB_API_KEY: "${{ secrets.TMDB_API_KEY }}"
+            FIREBASE_PROJECT_ID: "${{ secrets.FIREBASE_PROJECT_ID }}"
+            FIREBASE_PRIVATE_KEY_ID: "${{ secrets.FIREBASE_PRIVATE_KEY_ID }}"
+            FIREBASE_PRIVATE_KEY: "${{ secrets.FIREBASE_PRIVATE_KEY }}"
+            FIREBASE_CLIENT_EMAIL: "${{ secrets.FIREBASE_CLIENT_EMAIL }}"
+            FIREBASE_CLIENT_ID: "${{ secrets.FIREBASE_CLIENT_ID }}"
+            FIREBASE_AUTH_URI: "${{ secrets.FIREBASE_AUTH_URI }}"
+            FIREBASE_TOKEN_URI: "${{ secrets.FIREBASE_TOKEN_URI }}"
+            FIREBASE_PROVIDER_CERT_URL: "${{ secrets.FIREBASE_PROVIDER_CERT_URL }}"
+            FIREBASE_CLIENT_CERT_URL: "${{ secrets.FIREBASE_CLIENT_CERT_URL }}"
+            FIREBASE_DATABASE_URL: "${{ secrets.FIREBASE_DATABASE_URL }}"
+          EOF
+
+      - name: Deploy to App Engine
+        id: deploy
+        uses: google-github-actions/deploy-appengine@main
+        with:
+          credentials: ${{ secrets.GCP_SA_KEY }}
+          project_id: ${{ secrets.GCP_PROJECT }}
+          deliverables: app.yaml
+
+      - name: Verify deployment
+        run: curl "${{ steps.deploy.outputs.url }}" --fail --silent --show-error
