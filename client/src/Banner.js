@@ -1,7 +1,7 @@
 import React from 'react';
-import './Nav.css'
+import './Banner.css'
 
-function Nav() {
+function Banner() {
     return (
         <header
           className="banner"
@@ -29,4 +29,4 @@ function Nav() {
     }
     
 
-export default Nav
+export default Banner
