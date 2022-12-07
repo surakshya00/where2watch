@@ -1,21 +1,20 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import { initializeApp } from 'firebase/app';
+// import { getAnalytics } from "firebase/analytics";
+import { getAuth } from 'firebase/auth';
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyCNncDGilKrSc-mnq6MHDzxSlIz1exl1aE",
-  authDomain: "where2watch-68d1c.firebaseapp.com",
-  projectId: "where2watch-68d1c",
-  storageBucket: "where2watch-68d1c.appspot.com",
-  messagingSenderId: "286159713398",
-  appId: "1:286159713398:web:31704df3c254600fdd5b57",
-  measurementId: "G-8X41P20VNH"
+  apiKey: 'AIzaSyAlmOQEp0HjtZHn3GwwS4bD9xkb0xDLhRI',
+  authDomain: 'what2watch-c439a.firebaseapp.com',
+  projectId: 'what2watch-c439a',
+  storageBucket: 'what2watch-c439a.appspot.com',
+  messagingSenderId: '112832403286',
+  appId: '1:112832403286:web:dacb496bf8b33b601228f7',
+  measurementId: 'G-FL2T5SKX9B',
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+// const analytics = getAnalytics(app);
+export const auth = getAuth(app);
+
+export default app;
