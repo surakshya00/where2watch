@@ -8,6 +8,9 @@
 **/.pnp
 **/.pnp.js
 
+# gcp
+app.yaml
+
 # testing
 **/coverage
 

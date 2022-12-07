@@ -1,5 +1,6 @@
 const mongoose = require('mongoose'),
   express = require('express'),
+  path = require('path'),
   cookieParser = require('cookie-parser');
 
 /**
