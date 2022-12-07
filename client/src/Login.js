@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import {
   onAuthStateChanged,
-  signOut,
   signInWithEmailAndPassword,
 } from 'firebase/auth';
+import { Navigate } from 'react-router-dom';
 import { auth } from './Firebase';
 import { loginUser } from './actions/users';
 
 function Login() {
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
+  const [successfulLogIn, setSuccessfulLogIn] = useState(false);
+  const [loginError, setLoginError] = useState("");
 
   const logIn = async () => {
     try {
@@ -19,6 +21,8 @@ function Login() {
         loginEmail,
         loginPassword,
       );
+      setSuccessfulLogIn(true);
+      console.log("signed In");
 
       if (credentials) {
         // generate cookie for authenticating requests
@@ -31,13 +35,11 @@ function Login() {
         // TODO: save user in context
       }
     } catch (error) {
+      setLoginError("Incorrect email or password")
       console.log(error.message);
     }
   };
 
-  const logOut = async () => {
-    await signOut(auth);
-  };
 
   const [user, setUser] = useState({});
 
@@ -45,48 +47,71 @@ function Login() {
     onAuthStateChanged(auth, (currentUser) => setUser(currentUser));
   }, []);
 
-  return (
-    <div>
-      <div>
-        <h1>Login</h1>
+  if (successfulLogIn) {
+    return <Navigate to="/" />;
+  }
 
-        <label>
-          <b>Email</b>
-        </label>
-        <input
-          type="text"
-          placeholder="Enter Email"
-          onChange={(event) => {
-            setLoginEmail(event.target.value);
-          }}
-          name="email"
-          required
-        />
-        <br></br>
 
-        <label>
-          <b>Password</b>
-        </label>
-        <input
-          type="password"
-          placeholder="Enter Password"
-          onChange={(event) => {
-            setLoginPassword(event.target.value);
-          }}
-          name="psw"
-          required
-        />
-        <br></br>
+    return (
+        <div>
+            <body class="backGround">
+                <link rel="stylesheet" href="./src/Login.css"></link>
+                <div class="container">
+                    <form class="form" id="login">
 
-        <button onClick={logIn}>Login</button>
-      </div>
-      <div>
-        <h4> User Logged In: </h4>
-        {user?.email}
-        <button onClick={logOut}>Log out</button>
-      </div>
-    </div>
-  );
+                    <h1 class="form__title">
+                        Login
+                    </h1>
+
+                    <p class="red">
+                        {loginError}
+                    </p>
+
+                    <div class="form__message form__message--error"></div>
+                    <div class="form__input-group">
+                        <input 
+                        type="text" 
+                        class="form__input" 
+                        autofocus placeholder="Enter Email" 
+                        onChange={(event) => {
+                            setLoginEmail(event.target.value);
+                        }} 
+                        name="email" 
+                        required
+                        />
+                        <br></br>
+
+                        <div class="form__input-error-message"></div>
+                    </div>
+
+                    <div class= "form__input-group">
+                        <input 
+                        type="password" 
+                        class="form__input" 
+                        autofocus placeholder="Enter Password" 
+                        onChange={(event) => {
+                            setLoginPassword(event.target.value);
+                        }} 
+                        name="psw" 
+                        required
+                        /> 
+                        <br></br>
+                        <div class="form__input-error-message"></div>
+                    </div>
+
+                    <button id="btnId" type="button" class="form__button" onClick={logIn} >Login</button>
+
+                    <p class="form__text">
+                        <a class="form__link" href="SignUp" id="linkCreateAccount">
+                            Don't have an account? Create account
+                        </a>
+                    </p>
+                    </form>
+                </div>
+            </body>
+        </div>
+    );
+
 }
 
 export default Login;

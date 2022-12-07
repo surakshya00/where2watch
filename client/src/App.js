@@ -1,19 +1,25 @@
-import React from 'react';
+import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
+import React, { useState } from 'react';
 import './App.css';
-import Banner from './Banner'
-import Row from './Row';
-import requests from "./requests";
+import Login from './Login';
+import SignUp from './SignUp';
+import MovieHome from './MovieHome';
+import Banner from './Banner';
+
 function App() {
+
+  const [loggedOut, hasLoggedOut] = useState(false);
+
   return (
     <div className="App">
-        <Banner />
-        <Row title="Trending Now" fetchUrl={requests.fetchTrending} />
-        <Row title="Top Rated" fetchUrl={requests.fetchTopRated} />
-        <Row title="Action Movies" fetchUrl={requests.fetchActionMovies} />
-        <Row title="Comedy Movies" fetchUrl={requests.fetchComedyMovies} />
-        <Row title="Horror Movies" fetchUrl={requests.fetchHorrorMovies} />
-        <Row title="Romance Movies" fetchUrl={requests.fetchRomanceMovies} />
-        <Row title="Documentaries" fetchUrl={requests.fetchDocumentaries} />
+      <Router>
+        <Routes>
+          <Route path="/" element={<MovieHome loggedOut = {loggedOut} />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/banner" element={<Banner hasLoggedOut={(loggedOut) => hasLoggedOut(loggedOut)} />} />
+        </Routes>
+      </Router>
     </div>
   );
 }

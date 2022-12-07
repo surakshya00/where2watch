@@ -1,7 +1,28 @@
-import React from 'react';
-import './Banner.css';
+import React, { useState } from 'react';
+import { signOut, onAuthStateChanged } from "firebase/auth";
+import { auth } from "./Firebase";
+import { Navigate } from 'react-router-dom';import './MovieHome.css';import './Banner.css';
 
-function Banner() {
+function Banner({hasLoggedOut}) {
+
+
+  const logOut = async () =>  {
+      await signOut(auth);
+      hasLoggedOut(true);
+  };
+
+  const [user, setUser] = useState({});
+
+  React.useEffect(() => {
+      onAuthStateChanged(auth, (currentUser) => setUser(currentUser))
+    }, []) 
+
+  
+  if (!user) {
+      return <Navigate to="/login" />;
+  }
+
+
   return (
     <header
       className="banner"
@@ -14,8 +35,8 @@ function Banner() {
       <div className="banner__contents">
         <h1 className="banner__title">Avengers</h1>
         <div className="banner__buttons">
-          <button className="banner__button">Recommendations</button>
-          <button className="banner__button">My List </button>
+          <button  className="banner__button">My List </button>
+          <button className="banner__button" onClick={logOut}>Log Out</button>
         </div>
 
         <div className="banner__description"></div>
