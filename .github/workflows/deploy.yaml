@@ -15,8 +15,8 @@ jobs:
       
       - name: Build client
         run: |
-          npm client:install
-          npm client:build
+          npm run client:install
+          npm run client:build
 
       - name: Create app.yaml
         run: |
