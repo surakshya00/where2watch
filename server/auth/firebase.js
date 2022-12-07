@@ -1,21 +1,21 @@
-const firebase = require('firebase/app');
+const { initializeApp } = require('firebase-admin/app');
+const { credential } = require('firebase-admin');
 const { getAuth } = require('firebase/auth');
 
-const firebaseConfig = {
-  apiKey: 'AIzaSyAlmOQEp0HjtZHn3GwwS4bD9xkb0xDLhRI',
-  authDomain: 'what2watch-c439a.firebaseapp.com',
-  projectId: 'what2watch-c439a',
-  storageBucket: 'what2watch-c439a.appspot.com',
-  messagingSenderId: '112832403286',
-  appId: '1:112832403286:web:dacb496bf8b33b601228f7',
-  measurementId: 'G-FL2T5SKX9B',
-};
-
-const app = firebase.initializeApp(firebaseConfig);
+const app = initializeApp({
+  credential: credential.cert({
+    projectId: process.env.FIREBASE_PROJECT_ID,
+    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+    privateKey: process.env.FIREBASE_PRIVATE_KEY,
+  }),
+  // databaseURL: 'https://<DATABASE_NAME>.firebaseio.com',
+});
 
 const auth = getAuth(app);
 
 async function verifyFirebaseToken(token) {
+  const decodedToken = await getAuth(app).verifyIdToken(token);
+  console.log(decodedToken);
   throw new Error('failed to verify firebase access token');
 }
 

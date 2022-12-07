@@ -1,6 +1,5 @@
-const { getAuth } = require('firebase/auth');
 const { getJWTFromCookie } = require('../auth');
-const { auth, app, verifyFirebaseToken } = require('../auth/firebase');
+const { verifyFirebaseToken } = require('../auth/firebase');
 const { getUserByEmail } = require('../services/user');
 
 async function authenticateUser(req, res, next) {
