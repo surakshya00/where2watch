@@ -1,5 +1,6 @@
 const mongoose = require('mongoose'),
-  express = require('express');
+  express = require('express'),
+  cookieParser = require('cookie-parser');
 
 /**
  * Configure Mongoose database connector
@@ -19,6 +20,9 @@ const app = express();
 
 // Allow Content-Type of application/json
 app.use(express.json());
+
+// allow parsing cookies on server-side
+app.use(cookieParser());
 
 // add api endpoints
 const routes = require('./routes');
