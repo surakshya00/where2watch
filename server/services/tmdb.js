@@ -190,6 +190,32 @@ async function getDocumentaries() {
   }
 }
 
+async function getMovieDetails(movieId) {
+  const apiKey = getAPIKey();
+  const searchURL = `${BASE_URL}/movie/${movieId}?api_key=${apiKey}&language=en-US`;
+
+  const apiResponse = await fetch(searchURL);
+
+  if (apiResponse.status === 200) {
+    const apiJSON = await apiResponse.json();
+    return apiJSON;
+  }
+
+  throw 'failed to retrieve movie details';
+}
+
+async function getMovieVideos(movieId) {
+  const apiKey = getAPIKey();
+  const searchURL = `${BASE_URL}/movie/${movieId}/videos?api_key=${apiKey}&language=en-US`;
+
+  try {
+    const videos = await makeTMDBRequest(searchURL);
+    return videos;
+  } catch (e) {
+    throw 'failed to retrieve movie videos';
+  }
+}
+
 module.exports = {
   discoverMovies,
   getTrendingMovies,
@@ -199,4 +225,6 @@ module.exports = {
   getHorrorMovies,
   getRomanceMovies,
   getDocumentaries,
+  getMovieDetails,
+  getMovieVideos,
 };

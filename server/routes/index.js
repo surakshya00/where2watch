@@ -7,12 +7,14 @@ const search = require('./search');
 const watchlists = require('./watchlists');
 const users = require('./users');
 const discover = require('./discover');
+const movies = require('./movies');
 
 // register routes
 router.use('/search', search);
 router.use('/watchlists', watchlists);
 router.use('/users', users);
 router.use('/discover', discover);
+router.use('/movies', movies);
 
 // use to check if service is online
 router.get('/service/health', (req, res) => {
