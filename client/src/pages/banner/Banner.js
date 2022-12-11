@@ -1,27 +1,24 @@
 import React, { useState } from 'react';
-import { signOut, onAuthStateChanged } from "firebase/auth";
-import { auth } from "./Firebase";
-import { Navigate } from 'react-router-dom';import './MovieHome.css';import './Banner.css';
+import { signOut, onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../../auth/Firebase';
+import { Navigate } from 'react-router-dom';
+import './Banner.css';
 
-function Banner({hasLoggedOut}) {
-
-
-  const logOut = async () =>  {
-      await signOut(auth);
-      hasLoggedOut(true);
+function Banner({ hasLoggedOut }) {
+  const logOut = async () => {
+    await signOut(auth);
+    hasLoggedOut(true);
   };
 
   const [user, setUser] = useState({});
 
   React.useEffect(() => {
-      onAuthStateChanged(auth, (currentUser) => setUser(currentUser))
-    }, []) 
+    onAuthStateChanged(auth, (currentUser) => setUser(currentUser));
+  }, []);
 
-  
   if (!user) {
-      return <Navigate to="/login" />;
+    return <Navigate to="/login" />;
   }
-
 
   return (
     <header
@@ -35,8 +32,10 @@ function Banner({hasLoggedOut}) {
       <div className="banner__contents">
         <h1 className="banner__title">Avengers</h1>
         <div className="banner__buttons">
-          <button  className="banner__button">My List </button>
-          <button className="banner__button" onClick={logOut}>Log Out</button>
+          <button className="banner__button">My List </button>
+          <button className="banner__button" onClick={logOut}>
+            Log Out
+          </button>
         </div>
 
         <div className="banner__description"></div>
