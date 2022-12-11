@@ -31,12 +31,31 @@ export async function loginUser(token, email, name) {
     },
   });
 
-  if (response.status === 200) {
-    return;
-  }
-
   const body = await response.json();
+
+  if (response.status === 200) {
+    return body['user'];
+  }
 
   const errorMessage = body.message || 'Failed to validate user auth token';
   throw Error(errorMessage);
+}
+
+export async function verifyAuthUser() {
+  const response = await fetch('/api/users/validate');
+
+  const body = await response.json();
+
+  if (response.status === 200) {
+    return body['user'];
+  }
+
+  const errorMessage = body.message || 'Failed to validate user auth token';
+  throw Error(errorMessage);
+}
+
+export async function logoutUser() {
+  await fetch('/api/users/logout', {
+    method: 'POST',
+  });
 }
