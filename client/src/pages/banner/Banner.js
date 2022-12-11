@@ -1,25 +1,17 @@
-import React, { useState } from 'react';
-import { signOut, onAuthStateChanged } from 'firebase/auth';
+import React, { useContext } from 'react';
+import { signOut } from 'firebase/auth';
 import { auth } from '../../auth/Firebase';
-import { Navigate } from 'react-router-dom';
 import './Banner.css';
+import { AuthContext } from '../../providers/auth';
+import { logoutUser } from '../../actions/users';
 
-function Banner({ hasLoggedOut }) {
+function Banner() {
+  const { setUser } = useContext(AuthContext);
   const logOut = async () => {
+    await logoutUser();
     await signOut(auth);
-    hasLoggedOut(true);
+    setUser(null);
   };
-
-  const [user, setUser] = useState({});
-
-  React.useEffect(() => {
-    onAuthStateChanged(auth, (currentUser) => setUser(currentUser));
-  }, []);
-
-  if (!user) {
-    return <Navigate to="/login" />;
-  }
-
   return (
     <header
       className="banner"

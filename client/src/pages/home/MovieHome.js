@@ -1,22 +1,9 @@
-import React, { useState } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from '../../auth/Firebase';
-import { Navigate } from 'react-router-dom';
+import React from 'react';
 import Banner from '../banner/Banner';
 import Row from '../../components/row/Row';
 import requests from './requests';
 
-function MovieHome({ loggedOut }) {
-  const [user, setUser] = useState({});
-
-  React.useEffect(() => {
-    onAuthStateChanged(auth, (currentUser) => setUser(currentUser));
-  }, []);
-
-  if (!user || loggedOut) {
-    return <Navigate to="/login" />;
-  }
-
+function MovieHome() {
   return (
     <div className="App">
       <Banner />

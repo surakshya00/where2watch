@@ -2,7 +2,7 @@ const express = require('express');
 const { getJWTFromHeader, setJWTToCookie } = require('../auth');
 const { decodeFirebaseJWTToken } = require('../auth/firebase');
 const { authenticateUser } = require('../middleware/auth');
-const { createUser, emailExists } = require('../services/user');
+const { createUser, emailExists, getUserByEmail } = require('../services/user');
 
 const router = express.Router();
 
@@ -46,9 +46,12 @@ router.post('/login', async (req, res) => {
       await createUser(email, firstName, lastName);
     }
 
+    const user = await getUserByEmail(email);
+
     setJWTToCookie(res, token);
     return res.status(200).json({
       token,
+      user,
     });
   } catch (e) {
     return res.status(500).json({ message: e.toString() });
@@ -56,7 +59,7 @@ router.post('/login', async (req, res) => {
 });
 
 router.get('/validate', authenticateUser, async (req, res) => {
-  return res.status(200).json({ message: 'is authenticated' });
+  return res.status(200).json({ message: 'is authenticated', user: req.user });
 });
 
 function decodeRawName(name) {
@@ -76,5 +79,10 @@ function decodeRawName(name) {
 
   return result;
 }
+
+router.post('/logout', authenticateUser, async (req, res) => {
+  setJWTToCookie(res, '');
+  return res.status(200).json({ message: 'successfully logged out' });
+});
 
 module.exports = router;

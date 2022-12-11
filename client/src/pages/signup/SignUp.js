@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
-import {
-  createUserWithEmailAndPassword,
-  onAuthStateChanged,
-} from 'firebase/auth';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { Navigate } from 'react-router-dom';
 import { auth } from '../../auth/Firebase';
 import { saveUserToDatabase } from '../../actions/users';
@@ -15,33 +12,26 @@ function SignUp() {
   const [registerPassword, setRegisterPassword] = useState('');
   const [successfulSignUp, setSuccessfulSignUp] = useState(false);
 
-  const [user, setUser] = useState({});
-
-  React.useEffect(() => {
-    onAuthStateChanged(auth, (currentUser) => setUser(currentUser));
-  }, []);
-
   const register = async () => {
     try {
-      const user = await createUserWithEmailAndPassword(
+      await createUserWithEmailAndPassword(
         auth,
         registerEmail,
         registerPassword,
       );
-      setSuccessfulSignUp(true);
-      console.log(user);
       await saveUserToDatabase(
         registerEmail,
         registerFirstName,
         registerLastName,
       );
+      setSuccessfulSignUp(true);
     } catch (error) {
-      console.log(error.message);
+      alert(error.message);
     }
   };
 
   if (successfulSignUp) {
-    return <Navigate to="/" />;
+    return <Navigate to="/login" />;
   }
 
   return (
