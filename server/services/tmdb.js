@@ -2,6 +2,14 @@ const fetch = require('cross-fetch');
 
 const BASE_URL = 'https://api.themoviedb.org/3';
 
+function getAPIKey() {
+  const apiKey = process.env.TMBD_API_KEY;
+  if (apiKey === '') {
+    throw 'TMBD API key not found';
+  }
+  return apiKey;
+}
+
 function generateSearchParams(searchFilters) {
   const params = {};
 
@@ -68,11 +76,19 @@ function generateSearchParams(searchFilters) {
   return params;
 }
 
-async function discoverMovies(searchFilters) {
-  const apiKey = process.env.TMBD_API_KEY;
-  if (apiKey === '') {
-    throw 'TMBD API key not found';
+async function makeTMDBRequest(url) {
+  const apiResponse = await fetch(url);
+
+  if (apiResponse.status === 200) {
+    const apiJSON = await apiResponse.json();
+    return apiJSON['results'];
   }
+
+  throw 'failed to retrieve movie details';
+}
+
+async function discoverMovies(searchFilters) {
+  const apiKey = getAPIKey();
 
   // Documentation: https://developers.themoviedb.org/3/discover/movie-discover
   let searchURL = `${BASE_URL}/discover/movie?api_key=${apiKey}`;
@@ -82,16 +98,133 @@ async function discoverMovies(searchFilters) {
     searchURL += `&${key}=${encodeURIComponent(value)}`;
   }
 
+  try {
+    const movies = await makeTMDBRequest(searchURL);
+    return movies;
+  } catch (e) {
+    throw 'failed to discover new movies';
+  }
+}
+
+async function getTrendingMovies() {
+  const apiKey = getAPIKey();
+  const searchURL = `${BASE_URL}/trending/movie/week?api_key=${apiKey}&language=en-US`;
+
+  try {
+    const movies = await makeTMDBRequest(searchURL);
+    return movies;
+  } catch (e) {
+    throw 'failed to retrieve trending movies';
+  }
+}
+
+async function getTopRatedMovies() {
+  const apiKey = getAPIKey();
+  const searchURL = `${BASE_URL}/movie/top_rated?api_key=${apiKey}&language=en-US`;
+
+  try {
+    const movies = await makeTMDBRequest(searchURL);
+    return movies;
+  } catch (e) {
+    throw 'failed to retrieve top rated movies';
+  }
+}
+
+async function getActionMovies() {
+  const apiKey = getAPIKey();
+  const searchURL = `${BASE_URL}/discover/movie?api_key=${apiKey}&language=en-US&with_genres=28`;
+
+  try {
+    const movies = await makeTMDBRequest(searchURL);
+    return movies;
+  } catch (e) {
+    throw 'failed to retrieve top rated movies';
+  }
+}
+
+async function getComedyMovies() {
+  const apiKey = getAPIKey();
+  const searchURL = `${BASE_URL}/discover/movie?api_key=${apiKey}&language=en-US&with_genres=35`;
+
+  try {
+    const movies = await makeTMDBRequest(searchURL);
+    return movies;
+  } catch (e) {
+    throw 'failed to retrieve top rated movies';
+  }
+}
+
+async function getHorrorMovies() {
+  const apiKey = getAPIKey();
+  const searchURL = `${BASE_URL}/discover/movie?api_key=${apiKey}&language=en-US&with_genres=27`;
+
+  try {
+    const movies = await makeTMDBRequest(searchURL);
+    return movies;
+  } catch (e) {
+    throw 'failed to retrieve top rated movies';
+  }
+}
+
+async function getRomanceMovies() {
+  const apiKey = getAPIKey();
+  const searchURL = `${BASE_URL}/discover/movie?api_key=${apiKey}&language=en-US&with_genres=10749`;
+
+  try {
+    const movies = await makeTMDBRequest(searchURL);
+    return movies;
+  } catch (e) {
+    throw 'failed to retrieve top rated movies';
+  }
+}
+
+async function getDocumentaries() {
+  const apiKey = getAPIKey();
+  const searchURL = `${BASE_URL}/discover/movie?api_key=${apiKey}&language=en-US&with_genres=99`;
+
+  try {
+    const movies = await makeTMDBRequest(searchURL);
+    return movies;
+  } catch (e) {
+    throw 'failed to retrieve top rated movies';
+  }
+}
+
+async function getMovieDetails(movieId) {
+  const apiKey = getAPIKey();
+  const searchURL = `${BASE_URL}/movie/${movieId}?api_key=${apiKey}&language=en-US`;
+
   const apiResponse = await fetch(searchURL);
 
   if (apiResponse.status === 200) {
     const apiJSON = await apiResponse.json();
-    return apiJSON['results'];
+    return apiJSON;
   }
 
-  throw 'failed to discover new movies';
+  throw 'failed to retrieve movie details';
+}
+
+async function getMovieVideos(movieId) {
+  const apiKey = getAPIKey();
+  const searchURL = `${BASE_URL}/movie/${movieId}/videos?api_key=${apiKey}&language=en-US`;
+
+  try {
+    const videos = await makeTMDBRequest(searchURL);
+    return videos;
+  } catch (e) {
+    throw 'failed to retrieve movie videos';
+  }
 }
 
 module.exports = {
   discoverMovies,
+  getTrendingMovies,
+  getTopRatedMovies,
+  getActionMovies,
+  getComedyMovies,
+  getHorrorMovies,
+  getRomanceMovies,
+  getDocumentaries,
+  getMovieDetails,
+  getMovieVideos,
 };

@@ -14,7 +14,7 @@
 .row__poster {
     object-fit: contain;
     width: 100%;
-    max-height: 100px;
+    max-height: 160px;
     margin-right: 10px;
     transition: transform 450ms;
 }
@@ -28,4 +28,10 @@
 
 .row__posterLarge:hover {
     transform:scale(1.09);
+}
+
+.row__loading {
+    text-align: center;
+    height: 160px;
+    line-height: 160px;
 }
