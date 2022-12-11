@@ -4,6 +4,18 @@ import './Row.css';
 import Youtube from 'react-youtube';
 
 const baseImgUrl = 'https://image.tmdb.org/t/p/original';
+
+async function getMovieData(url) {
+  const response = await fetch(url);
+  const responseJSON = await response.json();
+
+  if (response.status === 200) {
+    return responseJSON['movies'];
+  }
+
+  throw new Error(responseJSON?.message || 'Failed to retrieve movie data');
+}
+
 function Row({ title, fetchUrl, isLargeRow }) {
   const [trailerUrl, setTrailerUrl] = useState('');
   const [movies, setMovies] = useState([]);
@@ -16,12 +28,13 @@ function Row({ title, fetchUrl, isLargeRow }) {
   };
 
   useEffect(() => {
-    async function fetchData() {
-      const request = await axios.get(fetchUrl);
-      setMovies(request.data.results || []);
-      return request;
-    }
-    fetchData();
+    getMovieData(fetchUrl)
+      .then((movies) => {
+        setMovies(movies);
+      })
+      .catch((e) => {
+        alert(e.toString());
+      });
   }, [fetchUrl]);
 
   const handleClick = async (movie) => {

@@ -2,6 +2,14 @@ const fetch = require('cross-fetch');
 
 const BASE_URL = 'https://api.themoviedb.org/3';
 
+function getAPIKey() {
+  const apiKey = process.env.TMBD_API_KEY;
+  if (apiKey === '') {
+    throw 'TMBD API key not found';
+  }
+  return apiKey;
+}
+
 function generateSearchParams(searchFilters) {
   const params = {};
 
@@ -69,10 +77,7 @@ function generateSearchParams(searchFilters) {
 }
 
 async function discoverMovies(searchFilters) {
-  const apiKey = process.env.TMBD_API_KEY;
-  if (apiKey === '') {
-    throw 'TMBD API key not found';
-  }
+  const apiKey = getAPIKey();
 
   // Documentation: https://developers.themoviedb.org/3/discover/movie-discover
   let searchURL = `${BASE_URL}/discover/movie?api_key=${apiKey}`;
@@ -92,6 +97,22 @@ async function discoverMovies(searchFilters) {
   throw 'failed to discover new movies';
 }
 
+async function getTrendingMovies() {
+  const apiKey = getAPIKey();
+
+  let searchURL = `${BASE_URL}/trending/movie/week?api_key=${apiKey}&language=en-US`;
+
+  const apiResponse = await fetch(searchURL);
+
+  if (apiResponse.status === 200) {
+    const apiJSON = await apiResponse.json();
+    return apiJSON['results'];
+  }
+
+  throw 'failed to retrieve trending movies';
+}
+
 module.exports = {
   discoverMovies,
+  getTrendingMovies,
 };
