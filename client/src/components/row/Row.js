@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import MovieDetails from '../movie-details';
+
 import './Row.css';
-import Youtube from 'react-youtube';
 
 const baseImgUrl = 'https://image.tmdb.org/t/p/original';
 
@@ -16,29 +16,10 @@ async function getMovieData(url) {
   throw new Error(responseJSON?.message || 'Failed to retrieve movie data');
 }
 
-async function getMovieVideos(movieId) {
-  const response = await fetch(`/api/movies/${movieId}/videos`);
-  const responseJSON = await response.json();
-
-  if (response.status === 200) {
-    return responseJSON['videos'];
-  }
-
-  throw new Error(responseJSON?.message || 'Failed to retrieve movie videos');
-}
-
 function Row({ title, fetchUrl, isLargeRow }) {
   const [loading, setLoading] = useState(true);
-  const [trailerUrl, setTrailerUrl] = useState('');
   const [movies, setMovies] = useState([]);
-
-  const opts = {
-    height: '390',
-    width: '100%',
-    playerVars: {
-      autoplay: 1,
-    },
-  };
+  const [selectedMovie, setSelectedMovie] = useState(null);
 
   useEffect(() => {
     setLoading(true);
@@ -54,14 +35,12 @@ function Row({ title, fetchUrl, isLargeRow }) {
       });
   }, [fetchUrl]);
 
-  const handleClick = async (movie) => {
-    setTrailerUrl('');
-    getMovieVideos(movie.id).then((videos) => {
-      const trailers = videos.filter((x) => x.type === 'Trailer');
-      if (trailers.length > 0) {
-        setTrailerUrl(trailers[0].key);
-      }
-    });
+  const handleClick = (movie) => {
+    if (movie.id === selectedMovie?.id) {
+      setSelectedMovie(null);
+    } else {
+      setSelectedMovie(movie);
+    }
   };
 
   return (
@@ -82,7 +61,12 @@ function Row({ title, fetchUrl, isLargeRow }) {
             />
           ))}
       </div>
-      {trailerUrl && <Youtube videoId={trailerUrl} opts={opts} />}
+      {selectedMovie && (
+        <MovieDetails
+          movie={selectedMovie}
+          onClose={() => setSelectedMovie(null)}
+        />
+      )}
     </div>
   );
 }
