@@ -12,6 +12,7 @@ import {
 } from '@chakra-ui/react';
 import YouTube from 'react-youtube';
 import { getGenreName, getReleaseYear } from './utils';
+import MovieProviders from '../providers';
 
 const youtubeVideoConfig = {
   height: '390',
@@ -68,7 +69,7 @@ function MovieDetails({ movie, onClose }) {
       {/* Movie Genres */}
       <Box display="flex" flexDir="row" my="4">
         {genre_ids.map((x) => (
-          <Tag key={genre_ids} mr="3" size="sm">
+          <Tag key={x} mr="3" size="sm">
             {getGenreName(x)}
           </Tag>
         ))}
@@ -95,7 +96,12 @@ function MovieDetails({ movie, onClose }) {
 
         <Divider my="4" />
 
-        <Text>{overview}</Text>
+        <Text my="3">{overview}</Text>
+
+        <Box my="5">
+          <Heading size="sm">Providers</Heading>
+          <MovieProviders id={movie.id} />
+        </Box>
       </Box>
     </Box>
   );
