@@ -216,6 +216,18 @@ async function getMovieVideos(movieId) {
   }
 }
 
+async function getMovieProviders(movieId) {
+  const apiKey = getAPIKey();
+  const searchURL = `${BASE_URL}/movie/${movieId}/watch/providers?api_key=${apiKey}&language=en-US`;
+
+  try {
+    const providers = await makeTMDBRequest(searchURL);
+    return providers;
+  } catch (e) {
+    throw 'failed to retrieve movie videos';
+  }
+}
+
 module.exports = {
   discoverMovies,
   getTrendingMovies,
@@ -227,4 +239,5 @@ module.exports = {
   getDocumentaries,
   getMovieDetails,
   getMovieVideos,
+  getMovieProviders,
 };
