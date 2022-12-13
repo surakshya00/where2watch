@@ -112,8 +112,10 @@ function Watchlist() {
           </Box>
         )}
         {error && (
-          <Box>
-            <Text>{error}</Text>
+          <Box textAlign="center" py="5">
+            <Heading fontWeight="normal" fontSize="xl">
+              {error.toString()}
+            </Heading>
           </Box>
         )}
 

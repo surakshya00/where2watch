@@ -34,7 +34,7 @@ router.get('/:watchlistId', authenticateUser, async (req, res) => {
 });
 
 // route to add to watchlist
-router.post('/:watchlistId', authenticateUser, async (req, res) => {
+router.post('/:watchlistId/movies', authenticateUser, async (req, res) => {
   try {
     const userId = req.user.id;
     const watchlistId = req.params.id;
@@ -55,7 +55,7 @@ router.post('/:watchlistId', authenticateUser, async (req, res) => {
 });
 
 // route to delete from watchlist
-router.delete('/:watchlistId', authenticateUser, async (req, res) => {
+router.delete('/:watchlistId/movies', authenticateUser, async (req, res) => {
   try {
     const userId = req.user.id;
     const watchlistId = req.params.watchlistId;
@@ -79,8 +79,8 @@ router.post('/', authenticateUser, async (req, res) => {
     if (!title) {
       return res.status(400).json({ message: 'please provide a valid title' });
     }
-    const watchlists = await createWatchlist(title, userId);
-    return res.status(200).json({ watchlists });
+    const watchlist = await createWatchlist(title, userId);
+    return res.status(200).json({ watchlist });
   } catch (e) {
     return res.status(500).json({ message: e.toString() });
   }

@@ -38,7 +38,7 @@ async function createWatchlist(title, userId) {
 
 async function deleteWatchlist(watchlistId, userId) {
   const watchlistToDelete = await getWatchlistById(watchlistId, userId);
-  return watchlistToDelete.remove();
+  return watchlistToDelete.delete();
 }
 
 async function addMovieToWatchlist(

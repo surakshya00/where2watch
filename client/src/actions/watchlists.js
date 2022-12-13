@@ -26,7 +26,26 @@ export async function CreateWatchlist(watchlistName) {
   const body = await response.json();
 
   if (response.status === 200) {
-    return body['user'];
+    return body['watchlist'];
+  }
+
+  const errorMessage = body.message || 'Failed to create new watchlist';
+  throw Error(errorMessage);
+}
+
+export async function DeleteWatchlist(watchlistId) {
+  console.log('Deleting watchlist', watchlistId);
+  const response = await fetch(`/api/watchlists/${watchlistId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  const body = await response.json();
+
+  if (response.status === 200) {
+    return body['message'];
   }
 
   const errorMessage = body.message || 'Failed to create new watchlist';
