@@ -25,6 +25,7 @@ function generateSearchParams(searchFilters) {
   // setup user passed params
   const {
     page,
+    genres,
     certification,
     minReleaseYear,
     maxReleaseYear,
@@ -49,12 +50,19 @@ function generateSearchParams(searchFilters) {
   // certification
   if (certification) {
     params['certification_country'] = 'US';
-    if (certification.length == 1) {
-      params['certification'] = certification;
+    if (certification.length === 1) {
+      if (certification[0] !== '') {
+        params['certification'] = certification[0];
+      }
     } else {
       params['certification.lte'] = certification[certification.length - 1];
       params['certification.gte'] = certification[0];
     }
+  }
+
+  // genres
+  if (genres && genres.length > 0) {
+    params['with_genres'] = genres.join(',');
   }
 
   // release year
@@ -90,11 +98,13 @@ async function makeTMDBRequest(url) {
 async function discoverMovies(searchFilters) {
   const apiKey = getAPIKey();
 
+  // console.log(searchFilters);
+
   // Documentation: https://developers.themoviedb.org/3/discover/movie-discover
   let searchURL = `${BASE_URL}/discover/movie?api_key=${apiKey}`;
 
-  params = generateSearchParams(searchFilters);
-  for (const [key, value] of Object.entries(object)) {
+  const params = generateSearchParams(searchFilters);
+  for (const [key, value] of Object.entries(params)) {
     searchURL += `&${key}=${encodeURIComponent(value)}`;
   }
 

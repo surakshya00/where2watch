@@ -1,164 +1,232 @@
-import React, { useContext, useState } from 'react';
-import { signOut } from 'firebase/auth';
-import { auth } from '../../auth/Firebase';
+import React, { useState } from 'react';
+import {
+  Box,
+  Button,
+  Heading,
+  Input,
+  Select as ChakraSelect,
+  Text,
+} from '@chakra-ui/react';
+import { SearchIcon } from '@chakra-ui/icons';
+import Select from 'react-select';
 import './SearchBanner.css';
-import { AuthContext } from '../../providers/auth';
-import { logoutUser } from '../../actions/users';
+import { GenreIdToName } from '../../utils/genres';
 
-function SearchBanner() {
-  const { setUser } = useContext(AuthContext);
-  const logOut = async () => {
-    await signOut(auth);
-    await logoutUser();
-    setUser(null);
+function getGenreOptions() {
+  const options = [];
+
+  for (const [key, value] of Object.entries(GenreIdToName)) {
+    options.push({
+      value: key,
+      label: value,
+    });
+  }
+  return options;
+}
+
+function SearchBanner({ isLoading, onSubmit }) {
+  const [keyword, setKeyword] = useState('');
+  const [genres, setGenres] = useState([]);
+  const [minYear, setMinYear] = useState('');
+  const [maxYear, setMaxYear] = useState('');
+  const [minRatings, setMinRatings] = useState('');
+  const [maxRatings, setMaxRatings] = useState('');
+  const [certification, setCertification] = useState('');
+  const [sortOrder, setSortOrder] = useState('desc');
+  const [sortBy, setSortBy] = useState('popularity');
+
+  const submitForm = () => {
+    const parsedKeywords = keyword.split(',').map((x) => x.trim());
+    const parsedGenres = genres.map((x) => x.value);
+
+    const payload = {
+      keyword: parsedKeywords,
+      genres: parsedGenres,
+      minReleaseYear: minYear,
+      maxReleaseYear: maxYear,
+      minRatings,
+      maxRatings,
+      certification: [certification],
+      sortBy,
+      sortOrder,
+      page: 1,
+    };
+
+    onSubmit(payload);
   };
 
-  const {keyword, setKeyword} = useState("");
-  const {genre, setGenre} = useState("");
-  const {minYear, setMinYear} = useState("");
-  const {maxYear, setMaxYear} = useState("");
-  const {minRatings, setMinRatings} = useState("");
-  const {maxRatings, setMaxRatings} = useState("");
-  const {certifications, setCertifications} = useState("");
-  const {sortOrder, setSortOrder} = useState("");
-  const {sortBy, setSortBy} = useState("");
+  const genreOptions = getGenreOptions();
 
   return (
-    <header
-    className="banner"
-    style={{
-        backgroundSize: 'cover',
-        backgroundImage: `url("https://collider.com/wp-content/uploads/the-avengers-movie-poster-banners-04.jpg")`,
-        backdropPosition: 'center center',
-    }}
-    >
-    <div className="banner__contents">
-        <h1 className="banner__title">Search</h1>
-        <div className="banner__buttons">
-        <button className="banner__button">My List </button>
-        <button className="banner__button" onClick={logOut}>
-            Log Out
-        </button>
-        </div>
+    <Box textColor="black" p="5" backgroundColor="white">
+      <Heading textAlign="center" py="5" fontSize="xl">
+        Search Movies
+      </Heading>
 
-        <div className="filter_details">
-            <div>
-                <h4 className="keyword">KeyWord:</h4>
-                <input
-                    className="keyword"
-                    type="text"
-                    placeholder="Keyword"
-                    onChange={(event) => {
-                        setKeyword(event.target.value);
-                    }}
-                />
-            </div>
-            <div>
-                <h4>Genre:</h4>
-                <br></br>
-                <input
-                    className='genre'
-                    type="text"
-                    placeholder="Genre"
-                    onChange={(event) => {
-                        setGenre(event.target.value);
-                    }}
-                />
-            </div>
-            <div>
-                <h4 className="name">Release Year:</h4>
-                <input
-                    className="minyear"
-                    type="text"
-                    placeholder="minimum release year"
-                    onChange={(event) => {
-                        setMinYear(event.target.value);
-                    }}
-                />-
+      <Box
+        display="flex"
+        my="2"
+        mx="2"
+        flexDir={['column', null, 'row']}
+        justifyContent="space-evenly"
+      >
+        <Box>
+          <Heading size="sm" my="2">
+            Keywords
+          </Heading>
+          <Input
+            placeholder="romance,software"
+            value={keyword}
+            minW="320px"
+            onChange={(e) => {
+              setKeyword(e.target.value);
+            }}
+          />
+        </Box>
 
-                <input
-                    className="maxyear"
-                    type="text"
-                    placeholder="maximum release year"
-                    onChange={(event) => {
-                        setMaxYear(event.target.value);
-                    }}
-                />
-            </div>
-            <div>
-                <h4 className="name">Ratings:</h4>
-                <input
-                    className="minrate"
-                    type="text"
-                    placeholder="minimum ratings"
-                    onChange={(event) => {
-                        setMinRatings(event.target.value);
-                    }}
-                />- 
+        <Box>
+          <Heading size="sm" my="2">
+            Genres
+          </Heading>
+          <Select
+            className="filter_genres"
+            isMulti
+            onChange={(selectedGenres) => setGenres(selectedGenres)}
+            value={genres}
+            options={genreOptions}
+            placeholder="Pick genre(s)"
+          />
+        </Box>
+      </Box>
 
-                <input
-                    className="maxrate"
-                    type="text"
-                    placeholder="maximum ratings"
-                    onChange={(event) => {
-                        setMaxRatings(event.target.value);
-                    }}
-                />
-            </div>
-        </div>
+      <Box
+        display="flex"
+        my="2"
+        mx="2"
+        flexDir={['column', null, 'row']}
+        justifyContent="space-evenly"
+      >
+        <Box>
+          <Heading size="sm" my="2">
+            Release Year
+          </Heading>
+          <Box display="flex" flexDir="row">
+            <Input
+              type="number"
+              placeholder="Minimum Release Year"
+              value={minYear}
+              onChange={(e) => {
+                setMinYear(e.target.value);
+              }}
+            />
+            <Text fontSize="lg" mx="2">
+              -
+            </Text>
+            <Input
+              type="number"
+              placeholder="Maximum Release Year"
+              value={maxYear}
+              onChange={(e) => {
+                setMaxYear(e.target.value);
+              }}
+            />
+          </Box>
+        </Box>
 
-        <div className="next_filters">
-            <div>
-                <label type="button" data-toggle="dropdown">
-                <h4 className="certifications">Certifications</h4>
-                </label>
-                <select 
-                className="certifications"
-                onChange={(event) => {
-                    setCertifications(event.target.value);
-                }}>
-                    <option value="g">g</option>
-                    <option value="pg">pg</option>
-                    <option value="pg-13">pg-13</option>
-                    <option value="r">r</option>
-                    <option value="nc-19">nc-19</option>
-                </select>
-            </div>
-            <div>
-                <label type="button" data-toggle="dropdown">
-                <h4 className="sortby">Sory by:</h4>
-                </label>
-                <select 
-                className="sortby"
-                onChange={(event) => {
-                    setSortBy(event.target.value);
-                }}>
-                    <option value="popularity">popularity</option>
-                    <option value="ratings">ratings</option>
-                </select>
-            </div>
-            <div>
-                <label type="button" data-toggle="dropdown">
-                <h4 className="sortorder">Sort Order:</h4>
-                </label>
-                <select 
-                className="sortorder"
-                onChange={(event) => {
-                    setSortOrder(event.target.value);
-                }}>
-                    <option value="ascending">ascending</option>
-                    <option value="descending">descending</option>
-                </select>
-            </div>
-            <div>
-                <button className="results">Show Results </button>
-            </div>
-        </div>
-        
-        <div className="banner__description"></div>
-    </div>
-    <div className="banner__fadeBottom" />
-    </header>
+        <Box>
+          <Heading size="sm" my="2">
+            Ratings
+          </Heading>
+          <Box display="flex" flexDir="row">
+            <Input
+              type="number"
+              placeholder="Minimum Ratings"
+              value={minRatings}
+              onChange={(e) => {
+                setMinRatings(e.target.value);
+              }}
+            />
+            <Text fontSize="lg" mx="2">
+              -
+            </Text>
+            <Input
+              type="number"
+              placeholder="Maximum Ratings"
+              value={maxRatings}
+              onChange={(e) => {
+                setMaxRatings(e.target.value);
+              }}
+            />
+          </Box>
+        </Box>
+      </Box>
+
+      <Box
+        display="flex"
+        my="2"
+        mx="2"
+        flexDir={['column', null, 'row']}
+        justifyContent="space-evenly"
+      >
+        <Box>
+          <Heading size="sm" my="2">
+            Certification
+          </Heading>
+          <ChakraSelect
+            placeholder=""
+            value={certification}
+            onChange={(e) => setCertification(e.target.value)}
+          >
+            <option value="">Any</option>
+            <option value="g">g</option>
+            <option value="pg">pg</option>
+            <option value="pg-13">pg-13</option>
+            <option value="r">r</option>
+            <option value="nc-19">nc-19</option>
+          </ChakraSelect>
+        </Box>
+
+        <Box>
+          <Heading size="sm" my="2">
+            Sort By
+          </Heading>
+          <ChakraSelect
+            placeholder=""
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+          >
+            <option value="popularity">Popularity</option>
+            <option value="vote_average">Ratings</option>
+            <option value="release_date">Release Date</option>
+            <option value="original_title">Title</option>
+          </ChakraSelect>
+        </Box>
+
+        <Box>
+          <Heading size="sm" my="2">
+            Sort Order
+          </Heading>
+          <ChakraSelect
+            placeholder=""
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value)}
+          >
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+          </ChakraSelect>
+        </Box>
+      </Box>
+
+      <Box display="flex" justifyContent="center" my="5" onClick={submitForm}>
+        <Button
+          leftIcon={<SearchIcon />}
+          isLoading={isLoading}
+          colorScheme="blue"
+        >
+          Search
+        </Button>
+      </Box>
+    </Box>
   );
 }
 
