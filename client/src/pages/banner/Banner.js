@@ -16,6 +16,7 @@ function Banner() {
     setUser(null);
     navigate('/login');
   };
+
   return (
     <header
       className="banner"
@@ -38,6 +39,12 @@ function Banner() {
             My List
           </button>
           <button className="banner__button">Search </button>
+          <button
+            className="banner__button"
+            onClick={() => navigate('/search')}
+          >
+            Search{' '}
+          </button>
           <button className="banner__button" onClick={logOut}>
             Log Out
           </button>
