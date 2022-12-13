@@ -11,6 +11,7 @@ import Login from './pages/login/Login';
 import SignUp from './pages/signup/SignUp';
 import MovieHome from './pages/home/MovieHome';
 import Watchlist from './pages/watchlist/Watchlist';
+import Search from './pages/search/Search';
 import { AuthProvider, AuthContext } from './providers/auth';
 
 function App() {
@@ -33,6 +34,13 @@ function App() {
               path="/watchlist"
               element={
                   <Watchlist />
+              }
+            />
+            <Route
+              exact
+              path="/search"
+              element={
+                  <Search />
               }
             />
             <Route
