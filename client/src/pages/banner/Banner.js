@@ -1,9 +1,11 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { signOut } from 'firebase/auth';
 import { auth } from '../../auth/Firebase';
 import './Banner.css';
 import { AuthContext } from '../../providers/auth';
 import { logoutUser } from '../../actions/users';
+import { Navigate } from 'react-router-dom';
+
 
 function Banner() {
   const { setUser } = useContext(AuthContext);
@@ -12,6 +14,16 @@ function Banner() {
     await signOut(auth);
     setUser(null);
   };
+
+  const [canSearch, goToSearch] = useState(false);
+  function search() {
+    goToSearch(true);
+  }
+
+  if (canSearch) {
+    return <Navigate to="/search" />;
+  }
+
   return (
     <header
       className="banner"
@@ -25,7 +37,7 @@ function Banner() {
         <h1 className="banner__title">Avengers</h1>
         <div className="banner__buttons">
           <button className="banner__button">My List </button>
-          <button className="banner__button">Search </button>
+          <button className="banner__button" onClick={search}>Search </button>
           <button className="banner__button" onClick={logOut}>
             Log Out
           </button>
