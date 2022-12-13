@@ -69,7 +69,7 @@ function Search() {
     <div className="App">
       <Banner />
       <SearchBanner onSubmit={searchMovies} isLoading={loading} />
-      <Box backgroundColor="black" p="5">
+      <Box backgroundColor="black" p="5" textColor="white">
         <MovieGrid movies={movies} />
         {lastSearchFilters && movies && movies.length > 0 && (
           <Box display="flex" justifyContent="center" my="5">

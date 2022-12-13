@@ -98,14 +98,33 @@ async function makeTMDBRequest(url) {
 async function discoverMovies(searchFilters) {
   const apiKey = getAPIKey();
 
-  console.log(searchFilters);
-
   // Documentation: https://developers.themoviedb.org/3/discover/movie-discover
   let searchURL = `${BASE_URL}/discover/movie?api_key=${apiKey}`;
 
   const params = generateSearchParams(searchFilters);
+
   for (const [key, value] of Object.entries(params)) {
     searchURL += `&${key}=${encodeURIComponent(value)}`;
+  }
+
+  if (searchFilters.keywords) {
+    let keywordIds = [];
+
+    for (let i = 0; i < searchFilters.keywords.length; i++) {
+      try {
+        const ids = await getKeywordId(searchFilters.keywords[i]);
+        if (ids.length > 0) {
+          keywordIds = [...keywordIds, ...ids];
+        }
+      } catch (e) {
+        // ignore errors when retreiving keywords
+        console.log(e);
+      }
+    }
+
+    if (keywordIds.length > 0) {
+      searchURL += `&with_keywords=${keywordIds.join('|')}`;
+    }
   }
 
   try {
@@ -235,6 +254,21 @@ async function getMovieProviders(movieId) {
     return providers;
   } catch (e) {
     throw 'failed to retrieve movie videos';
+  }
+}
+
+async function getKeywordId(keyword) {
+  const apiKey = getAPIKey();
+  const searchURL = `${BASE_URL}/search/keyword?api_key=${apiKey}&language=en-US&query=${encodeURIComponent(
+    keyword,
+  )}`;
+
+  try {
+    const keywords = await makeTMDBRequest(searchURL);
+    return keywords.map((x) => x.id);
+  } catch (e) {
+    console.log(e);
+    throw 'failed to retrieve keywords';
   }
 }
 
