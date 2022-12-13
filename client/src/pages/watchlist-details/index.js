@@ -5,6 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Banner from '../banner/Banner';
 import { fetcher } from '../../actions/utils';
 import { DeleteWatchlist } from '../../actions/watchlists';
+import MovieGrid from '../../components/grid';
 
 function Watchlist({ watchlist }) {
   const navigate = useNavigate();
@@ -41,13 +42,7 @@ function Watchlist({ watchlist }) {
         </Button>
       </Box>
 
-      {(!movies || movies.length === 0) && (
-        <Box textAlign="center" py="5">
-          <Heading fontWeight="normal" fontSize="xl">
-            No movies in the watchlist
-          </Heading>
-        </Box>
-      )}
+      <MovieGrid movies={movies} loading={false} />
     </Box>
   );
 }
