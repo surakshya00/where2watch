@@ -4,17 +4,14 @@
 /.github
 /.vscode
 
-# Client source code
-client/src
-client/README.md
-client/package.json
-client/package-lock.json
+# local environment variables
+# .env
 
 # local dev files
+**/package-lock.json
 .prettierrc
 .gitignore
 docker-compose.yml
-Dockerfile
 Makefile
 nodemon.json
 README.md

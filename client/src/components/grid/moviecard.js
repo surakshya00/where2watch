@@ -1,13 +1,4 @@
-import {
-  Box,
-  Image,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalOverlay,
-  useDisclosure,
-} from '@chakra-ui/react';
+import { Box, Image, useDisclosure } from '@chakra-ui/react';
 import MovieModal from './movieModal';
 
 const POSTER_IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
