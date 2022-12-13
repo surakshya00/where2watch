@@ -25,6 +25,7 @@ function generateSearchParams(searchFilters) {
   // setup user passed params
   const {
     page,
+    genres,
     certification,
     minReleaseYear,
     maxReleaseYear,
@@ -49,12 +50,19 @@ function generateSearchParams(searchFilters) {
   // certification
   if (certification) {
     params['certification_country'] = 'US';
-    if (certification.length == 1) {
-      params['certification'] = certification;
+    if (certification.length === 1) {
+      if (certification[0] !== '') {
+        params['certification'] = certification[0];
+      }
     } else {
       params['certification.lte'] = certification[certification.length - 1];
       params['certification.gte'] = certification[0];
     }
+  }
+
+  // genres
+  if (genres && genres.length > 0) {
+    params['with_genres'] = genres.join(',');
   }
 
   // release year
@@ -93,9 +101,30 @@ async function discoverMovies(searchFilters) {
   // Documentation: https://developers.themoviedb.org/3/discover/movie-discover
   let searchURL = `${BASE_URL}/discover/movie?api_key=${apiKey}`;
 
-  params = generateSearchParams(searchFilters);
-  for (const [key, value] of Object.entries(object)) {
+  const params = generateSearchParams(searchFilters);
+
+  for (const [key, value] of Object.entries(params)) {
     searchURL += `&${key}=${encodeURIComponent(value)}`;
+  }
+
+  if (searchFilters.keywords) {
+    let keywordIds = [];
+
+    for (let i = 0; i < searchFilters.keywords.length; i++) {
+      try {
+        const ids = await getKeywordId(searchFilters.keywords[i]);
+        if (ids.length > 0) {
+          keywordIds = [...keywordIds, ...ids];
+        }
+      } catch (e) {
+        // ignore errors when retreiving keywords
+        console.log(e);
+      }
+    }
+
+    if (keywordIds.length > 0) {
+      searchURL += `&with_keywords=${keywordIds.join('|')}`;
+    }
   }
 
   try {
@@ -225,6 +254,21 @@ async function getMovieProviders(movieId) {
     return providers;
   } catch (e) {
     throw 'failed to retrieve movie videos';
+  }
+}
+
+async function getKeywordId(keyword) {
+  const apiKey = getAPIKey();
+  const searchURL = `${BASE_URL}/search/keyword?api_key=${apiKey}&language=en-US&query=${encodeURIComponent(
+    keyword,
+  )}`;
+
+  try {
+    const keywords = await makeTMDBRequest(searchURL);
+    return keywords.map((x) => x.id);
+  } catch (e) {
+    console.log(e);
+    throw 'failed to retrieve keywords';
   }
 }
 

@@ -1,4 +1,4 @@
-import { Box, SimpleGrid, Spinner, Text } from '@chakra-ui/react';
+import { Box, SimpleGrid, Text } from '@chakra-ui/react';
 import MovieCard from './moviecard';
 
 function MovieGrid({ movies }) {

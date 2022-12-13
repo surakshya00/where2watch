@@ -40,6 +40,7 @@ function App() {
               }
             />
             <Route
+              exact
               path="/watchlist/:id"
               element={
                 <RequireAuth>
@@ -51,7 +52,9 @@ function App() {
               exact
               path="/search"
               element={
+                <RequireAuth>
                   <Search />
+                </RequireAuth>
               }
             />
             <Route
