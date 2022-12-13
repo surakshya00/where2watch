@@ -25,7 +25,7 @@ function getGenreOptions() {
 }
 
 function SearchBanner({ isLoading, onSubmit }) {
-  const [keyword, setKeyword] = useState('');
+  const [keywords, setKeywords] = useState('');
   const [genres, setGenres] = useState([]);
   const [minYear, setMinYear] = useState('');
   const [maxYear, setMaxYear] = useState('');
@@ -36,11 +36,13 @@ function SearchBanner({ isLoading, onSubmit }) {
   const [sortBy, setSortBy] = useState('popularity');
 
   const submitForm = () => {
-    const parsedKeywords = keyword.split(',').map((x) => x.trim());
+    const parsedKeywords = keywords
+      .split(',')
+      .map((x) => x.trim().toLowerCase());
     const parsedGenres = genres.map((x) => x.value);
 
     const payload = {
-      keyword: parsedKeywords,
+      keywords: parsedKeywords,
       genres: parsedGenres,
       minReleaseYear: minYear,
       maxReleaseYear: maxYear,
@@ -76,10 +78,10 @@ function SearchBanner({ isLoading, onSubmit }) {
           </Heading>
           <Input
             placeholder="romance,software"
-            value={keyword}
+            value={keywords}
             minW="320px"
             onChange={(e) => {
-              setKeyword(e.target.value);
+              setKeywords(e.target.value);
             }}
           />
         </Box>

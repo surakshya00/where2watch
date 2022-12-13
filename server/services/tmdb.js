@@ -98,7 +98,7 @@ async function makeTMDBRequest(url) {
 async function discoverMovies(searchFilters) {
   const apiKey = getAPIKey();
 
-  // console.log(searchFilters);
+  console.log(searchFilters);
 
   // Documentation: https://developers.themoviedb.org/3/discover/movie-discover
   let searchURL = `${BASE_URL}/discover/movie?api_key=${apiKey}`;
