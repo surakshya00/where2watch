@@ -1,6 +1,6 @@
-import { Box, Button, Heading, Spinner, Text } from '@chakra-ui/react';
+import { Box, Button, Heading, Spinner } from '@chakra-ui/react';
 import useSWR, { mutate } from 'swr';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Banner from '../banner/Banner';
 import { fetcher } from '../../actions/utils';

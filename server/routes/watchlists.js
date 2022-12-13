@@ -37,39 +37,54 @@ router.get('/:watchlistId', authenticateUser, async (req, res) => {
 router.post('/:watchlistId/movies', authenticateUser, async (req, res) => {
   try {
     const userId = req.user.id;
-    const watchlistId = req.params.id;
-    const movieId = '22222';
-    const movieTitle = '2jkwb2';
-    const moviePoster = 'jsddfdsf';
-    const watchlists = await addMovieToWatchlist(
+    const watchlistId = req.params.watchlistId;
+    const { movieId, movieTitle, moviePoster } = req.body;
+
+    if (!movieId) {
+      return res
+        .status(400)
+        .json({ message: 'please provide a valid movie id' });
+    }
+
+    if (!movieTitle) {
+      return res
+        .status(400)
+        .json({ message: 'please provide a valid movie title' });
+    }
+
+    const watchlist = await addMovieToWatchlist(
       watchlistId,
       userId,
       movieId,
       movieTitle,
       moviePoster,
     );
-    return res.status(200).json({ watchlists });
+    return res.status(200).json({ watchlist });
   } catch (e) {
     return res.status(500).json({ message: e.toString() });
   }
 });
 
 // route to delete from watchlist
-router.delete('/:watchlistId/movies', authenticateUser, async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const watchlistId = req.params.watchlistId;
-    const movieId = '22222';
-    const watchlists = await removeMovieFromWatchlist(
-      watchlistId,
-      userId,
-      movieId,
-    );
-    return res.status(200).json({ watchlists });
-  } catch (e) {
-    return res.status(500).json({ message: e.toString() });
-  }
-});
+router.delete(
+  '/:watchlistId/movies/:movieId',
+  authenticateUser,
+  async (req, res) => {
+    try {
+      const userId = req.user.id;
+      const watchlistId = req.params.watchlistId;
+      const movieId = req.params.movieId;
+      const watchlist = await removeMovieFromWatchlist(
+        watchlistId,
+        userId,
+        movieId,
+      );
+      return res.status(200).json({ watchlist });
+    } catch (e) {
+      return res.status(500).json({ message: e.toString() });
+    }
+  },
+);
 
 // route to create watchlist
 router.post('/', authenticateUser, async (req, res) => {

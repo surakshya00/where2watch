@@ -34,7 +34,6 @@ export async function CreateWatchlist(watchlistName) {
 }
 
 export async function DeleteWatchlist(watchlistId) {
-  console.log('Deleting watchlist', watchlistId);
   const response = await fetch(`/api/watchlists/${watchlistId}`, {
     method: 'DELETE',
     headers: {
@@ -46,6 +45,52 @@ export async function DeleteWatchlist(watchlistId) {
 
   if (response.status === 200) {
     return body['message'];
+  }
+
+  const errorMessage = body.message || 'Failed to create new watchlist';
+  throw Error(errorMessage);
+}
+
+export async function AddToWatchlist(watchlistId, movie) {
+  const payload = {
+    movieId: movie.id,
+    movieTitle: movie.title,
+    moviePoster: movie.poster_path,
+  };
+
+  const response = await fetch(`/api/watchlists/${watchlistId}/movies`, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  const body = await response.json();
+
+  if (response.status === 200) {
+    return body['watchlist'];
+  }
+
+  const errorMessage = body.message || 'Failed to create new watchlist';
+  throw Error(errorMessage);
+}
+
+export async function RemoveFromWatchlist(watchlistId, movieId) {
+  const response = await fetch(
+    `/api/watchlists/${watchlistId}/movies/${movieId}`,
+    {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+  );
+
+  const body = await response.json();
+
+  if (response.status === 200) {
+    return body['watchlist'];
   }
 
   const errorMessage = body.message || 'Failed to create new watchlist';

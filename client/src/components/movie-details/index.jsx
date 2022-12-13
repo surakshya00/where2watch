@@ -13,6 +13,7 @@ import {
 import YouTube from 'react-youtube';
 import { getGenreName, getReleaseYear } from './utils';
 import MovieProviders from '../providers';
+import WatchlistButton from '../watchlist-button';
 
 const youtubeVideoConfig = {
   height: '390',
@@ -59,12 +60,14 @@ function MovieDetails({ movie, onClose }) {
         onClick={onClose}
         float="right"
       />
+
       {trailerUrl && <YouTube videoId={trailerUrl} opts={youtubeVideoConfig} />}
 
-      {/* Movie Title */}
       <Heading size="lg" my="2">
         {original_title}
       </Heading>
+
+      <WatchlistButton movie={movie} />
 
       {/* Movie Genres */}
       <Box display="flex" flexDir="row" my="4">
