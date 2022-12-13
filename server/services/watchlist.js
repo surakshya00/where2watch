@@ -38,7 +38,7 @@ async function createWatchlist(title, userId) {
 
 async function deleteWatchlist(watchlistId, userId) {
   const watchlistToDelete = await getWatchlistById(watchlistId, userId);
-  return watchlistToDelete.remove();
+  return watchlistToDelete.delete();
 }
 
 async function addMovieToWatchlist(
@@ -55,7 +55,7 @@ async function addMovieToWatchlist(
   const payload = { movieId, movieTitle, moviePoster };
 
   // upsert movie info to watchlist
-  const movieIndex = existingMovies.findIndex((x) => x.movieId === movieId);
+  const movieIndex = existingMovies.findIndex((x) => x.movieId == movieId);
   if (movieIndex === -1) {
     existingMovies.push(payload);
   } else {
@@ -69,7 +69,8 @@ async function addMovieToWatchlist(
 async function removeMovieFromWatchlist(watchlistId, userId, movieId) {
   const watchlist = await getWatchlistById(watchlistId, userId);
   const existingMovies = watchlist.movies || [];
-  watchlist.movies = existingMovies.filter((x) => x.movieId !== movieId);
+  const filteredMovies = existingMovies.filter((x) => x.movieId != movieId);
+  watchlist.movies = filteredMovies;
   await watchlist.save();
 }
 
