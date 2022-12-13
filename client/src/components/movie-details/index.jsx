@@ -16,7 +16,7 @@ import MovieProviders from '../providers';
 import WatchlistButton from '../watchlist-button';
 
 const youtubeVideoConfig = {
-  height: '390',
+  height: '500',
   width: '100%',
   playerVars: {
     autoplay: 1,
@@ -34,7 +34,7 @@ async function getMovieVideos(movieId) {
   throw new Error(responseJSON?.message || 'Failed to retrieve movie videos');
 }
 
-function MovieDetails({ movie, onClose }) {
+function MovieDetails({ movie, onClose, showCloseButton }) {
   const [trailerUrl, setTrailerUrl] = useState('');
 
   useEffect(() => {
@@ -46,20 +46,23 @@ function MovieDetails({ movie, onClose }) {
     });
   }, [movie.id]);
 
-  const { release_date, original_title, vote_average, overview, genre_ids } =
-    movie;
+  const { release_date, original_title, vote_average, overview } = movie;
 
   const releaseYear = getReleaseYear(release_date);
+  const genreIds =
+    movie.genre_ids || (movie.genres && movie.genres.map((x) => x.id)) || [];
 
   return (
     <Box p="5" mb="5" backgroundColor="black">
-      <CloseButton
-        size="xl"
-        color="white"
-        my="3"
-        onClick={onClose}
-        float="right"
-      />
+      {showCloseButton && (
+        <CloseButton
+          size="xl"
+          color="white"
+          my="3"
+          onClick={onClose}
+          float="right"
+        />
+      )}
 
       {trailerUrl && <YouTube videoId={trailerUrl} opts={youtubeVideoConfig} />}
 
@@ -71,7 +74,7 @@ function MovieDetails({ movie, onClose }) {
 
       {/* Movie Genres */}
       <Box display="flex" flexDir="row" my="4">
-        {genre_ids.map((x) => (
+        {genreIds.map((x) => (
           <Tag key={x} mr="3" size="sm">
             {getGenreName(x)}
           </Tag>

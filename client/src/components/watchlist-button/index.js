@@ -9,8 +9,6 @@ import {
   ModalHeader,
   ModalOverlay,
   Spinner,
-  Tag,
-  Text,
   useDisclosure,
 } from '@chakra-ui/react';
 import { CheckIcon } from '@chakra-ui/icons';

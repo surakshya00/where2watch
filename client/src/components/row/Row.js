@@ -65,6 +65,7 @@ function Row({ title, fetchUrl, isLargeRow }) {
         <MovieDetails
           movie={selectedMovie}
           onClose={() => setSelectedMovie(null)}
+          showCloseButton
         />
       )}
     </div>
